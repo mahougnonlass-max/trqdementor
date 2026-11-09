@@ -1,0 +1,35 @@
+TRADEMENTOR — DOSSIER DE DEPLOIEMENT NETLIFY (BASE DE PAIEMENT)
+
+CONTENU
+- index.html : version actuelle de TradeMentor
+- netlify/functions/create-payment.mjs : création d'une commande de paiement NOWPayments
+- netlify/functions/nowpayments-ipn.mjs : vérification de la signature IPN et sauvegarde du statut
+- netlify/functions/payment-status.mjs : consultation du statut d'une commande
+- netlify.toml et package.json : configuration Netlify
+
+IMPORTANT — ETAT REEL
+Ce dossier est une base technique de déploiement, PAS une intégration de paiement terminée.
+Le site HTML n'appelle pas encore create-payment et le webhook ne donne pas encore les droits Premium.
+L'application actuelle utilise window.claude.use('db') pour les comptes et les droits Premium. Les fonctions Netlify ne peuvent pas écrire dans cette base sans migration/connexion serveur sécurisée.
+Ne vendez pas l'accès comme activation automatique avant d'avoir ajouté une authentification vérifiée et une base de données des abonnements, puis testé le webhook en mode test.
+
+AVANT DEPLOIEMENT
+1. Dans Netlify, le dépôt Git doit contenir tous les fichiers de ce dossier à la racine du projet (index.html à la racine, netlify.toml à la racine, dossier netlify/functions).
+2. Dans Netlify > Site configuration > Environment variables, ajouter NOWPAYMENTS_API_KEY et NOWPAYMENTS_IPN_SECRET. Ne jamais mettre ces valeurs dans index.html, GitHub public ou une conversation.
+3. Régénérer la clé API précédemment exposée dans une conversation. Ne jamais réutiliser cette ancienne clé.
+4. Vérifier dans NOWPayments que le ticker USDT TRC20 utilisé par l'API est bien accepté par le compte. Si l'API refuse la devise, vérifier le ticker exact dans la documentation/compte NOWPayments avant de modifier le code.
+5. Déclencher un nouveau déploiement Netlify.
+
+TESTS A FAIRE AVANT TOUT PAIEMENT REEL
+- Vérifier les logs de fonctions Netlify.
+- Créer un petit paiement de test si NOWPayments propose le mode test pour le compte.
+- Vérifier que l'IPN est signé et reçu.
+- Vérifier que le montant, la devise, l'identifiant de paiement et la commande correspondent à la commande enregistrée côté serveur.
+- Ne jamais activer Premium sur la seule base d'une redirection du navigateur ou d'une capture d'écran.
+
+PRIX DE BASE REPRIS DU SITE
+Essai : 5,20 EUR / 7 jours
+Mensuel : 15 EUR / 30 jours
+Annuel : 144 EUR / 365 jours
+
+Cette base n'est pas encore prête pour la production ni pour l'activation automatique Premium.
